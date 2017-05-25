@@ -1,0 +1,6 @@
+--webpack-config webpack/config.test.js
+--colors
+--require webpack/mocha-setup.js
+--timeout 0
+--inline-diffs
+test/**/*.ts

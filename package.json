@@ -1,0 +1,36 @@
+{
+  "name": "power-dom",
+  "version": "1.0.0",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "repository": "https://github.com/bjoyx/power-dom.git",
+  "author": "Ben Lambert",
+  "license": "MIT",
+  "scripts": {
+    "install": "npm run build",
+    "build": "a=`find src -type f | grep '\\.ts$'`; tsc -d --outDir build $a",
+    "lint": "a=`find src test types -type f | grep '\\.ts$'`; tslint -p tsconfig.json --type-check $a",
+    "test": "mocha-webpack",
+    "test:watch": "npm run test -- --watch",
+    "test:browser": "webpack-dev-server --config webpack/config.test.browser.js --hot"
+  },
+  "dependencies": {
+    "power-belt": "https://github.com/bjoyx/power-belt.git",
+    "snabbdom": "^0.6.9"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.5.2",
+    "@types/mocha": "^2.2.41",
+    "chai": "^3.5.0",
+    "mocha": "^3.4.2",
+    "mocha-loader": "^1.1.1",
+    "mocha-webpack": "^0.7.0",
+    "source-map-support": "^0.4.15",
+    "ts-loader": "^2.1.0",
+    "tslint": "^5.3.2",
+    "tslint-eslint-rules": "^4.1.0",
+    "typescript": "^2.3.3",
+    "webpack": "^2.6.0",
+    "webpack-dev-server": "^2.4.5"
+  }
+}

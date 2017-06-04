@@ -10,7 +10,7 @@ export type VNode = VNode
 export type VNodeData = VNodeData
 
 import {
-  isString, isArray, isDefined, isUndefined, log, OneOrMore
+  isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing
 } from "power-belt"
 
 interface Global extends Window {
@@ -37,7 +37,7 @@ interface Name {
 }
 
 export type Content = OneOrMore<string|VNode>
-export type CssClass = OneOrMore<string>
+export type CssClass = OneOrMore<string|Nothing>
 
 export interface HyperScriptFunc {
   (): VNode

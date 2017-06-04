@@ -2359,21 +2359,7 @@ postcss@^6.0.1:
 
 "power-belt@https://github.com/bjoyx/power-belt.git":
   version "1.0.0"
-  resolved "https://github.com/bjoyx/power-belt.git#80e04757f7c5fdfd59c28705480bbff62b624459"
-  dependencies:
-    "@types/chai" "^3.5.2"
-    "@types/mocha" "^2.2.41"
-    chai "^3.5.0"
-    mocha "^3.4.2"
-    mocha-loader "^1.1.1"
-    mocha-webpack "^0.7.0"
-    source-map-support "^0.4.15"
-    ts-loader "^2.1.0"
-    tslint "^5.3.2"
-    tslint-eslint-rules "^4.1.0"
-    typescript "^2.3.3"
-    webpack "^2.6.0"
-    webpack-dev-server "^2.4.5"
+  resolved "https://github.com/bjoyx/power-belt.git#5ebee551468fbd7b340f1fbe313a3ca17d505b25"
 
 prepend-http@^1.0.0:
   version "1.0.4"

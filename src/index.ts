@@ -80,6 +80,7 @@ export const ul = tag("ul")
 export const ol = tag("ol")
 export const li = tag("li")
 export const input = tag("input")
+export const textarea = tag("textarea")
 export const img = tag("img")
 export const br = h("br")
 

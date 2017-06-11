@@ -36,7 +36,7 @@ interface Name {
   name: string
 }
 
-export type Content = OneOrMore<string|VNode>
+export type Content = OneOrMore<string|VNode|Nothing>
 export type CssClass = OneOrMore<string|Nothing>
 
 export interface HyperScriptFunc {

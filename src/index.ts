@@ -1,5 +1,7 @@
 import h from "snabbdom/h"
 import * as snabbdom from "snabbdom"
+import {types, style as $style} from "typestyle"
+type NestedCSSProperties = types.NestedCSSProperties
 import snabbdomClass from "snabbdom/modules/class"
 import snabbdomProps from "snabbdom/modules/props"
 import snabbdomStyle from "snabbdom/modules/style"
@@ -10,7 +12,7 @@ export type VNode = VNode
 export type VNodeData = VNodeData
 
 import {
-  isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing
+  isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing, exists, Maybe
 } from "power-belt"
 
 interface Global extends Window {
@@ -102,3 +104,21 @@ const replaceWithBr = (str: string, target: string) =>
 
 export const newlineToBr = (str: string) => replaceWithBr(str, "\n")
 export const newlineStrToBr = (str: string) => replaceWithBr(str, "\\n")
+
+type CSS = Maybe<string | string[] | NestedCSSProperties>
+export const style = (...css: CSS[]) => {
+  const classNames: string[] = []
+  const cssProperties: NestedCSSProperties[] = []
+  for (const it of css) {
+    if (isString(it)) {
+      classNames.push(it)
+    } else if (isArray(it)) {
+      classNames.push(...it)
+    } else if (exists(it)) {
+      cssProperties.push(it)
+    }
+  }
+  const result = [...classNames]
+  if (cssProperties.length) result.push($style(...cssProperties))
+  return result.length > 1 ? result : result[0]
+}

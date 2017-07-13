@@ -84,8 +84,9 @@ export const li = tag("li")
 export const input = tag("input")
 export const textarea = tag("textarea")
 export const img = tag("img")
+export const a = tag("a")
+
 export const br = h("br")
-export const a = h("a")
 
 const svgTag = (type: string) => {
   const t = tag(type)

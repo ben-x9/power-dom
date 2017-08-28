@@ -107,8 +107,8 @@ const replaceWithBr = (str: string, target: string) =>
 export const newlineToBr = (str: string) => replaceWithBr(str, "\n")
 export const newlineStrToBr = (str: string) => replaceWithBr(str, "\\n")
 
-type CSS = Maybe<string | string[] | NestedCSSProperties>
-export const style = (...css: CSS[]) => {
+export type Style = Maybe<string | string[] | NestedCSSProperties>
+export const style = (...css: Style[]) => {
   const classNames: string[] = []
   const cssProperties: NestedCSSProperties[] = []
   for (const it of css) {

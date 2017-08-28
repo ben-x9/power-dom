@@ -1,7 +1,7 @@
 import h from "snabbdom/h"
 import * as snabbdom from "snabbdom"
 import {types, style as $style} from "typestyle"
-type NestedCSSProperties = types.NestedCSSProperties
+export type NestedCSSProperties = types.NestedCSSProperties
 import snabbdomClass from "snabbdom/modules/class"
 import snabbdomProps from "snabbdom/modules/props"
 import snabbdomStyle from "snabbdom/modules/style"

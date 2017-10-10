@@ -1,9 +1,10 @@
 import h from "snabbdom/h"
 import * as snabbdom from "snabbdom"
 import {types, style as $style} from "typestyle"
-type NestedCSSProperties = types.NestedCSSProperties
+export type NestedCSSProperties = types.NestedCSSProperties
 import snabbdomClass from "snabbdom/modules/class"
 import snabbdomProps from "snabbdom/modules/props"
+import snabbdomAttrs from "snabbdom/modules/attributes"
 import snabbdomStyle from "snabbdom/modules/style"
 import snabbdomListeners from "snabbdom/modules/eventlisteners"
 
@@ -24,6 +25,7 @@ const global = window as Global
 const snabbdomPatch = snabbdom.init([
   snabbdomClass,
   snabbdomProps,
+  // snabbdomAttrs,
   snabbdomStyle,
   snabbdomListeners
 ])
@@ -51,6 +53,9 @@ export interface HyperScriptFunc {
   (cssClass: CssClass, data: VNodeData, content: Content): VNode
 }
 
+const isContent = (x: Maybe<VNodeData|Content>) =>
+  x && (isString(x) || isArray(x) || (x as VNode).sel)
+
 export const tag = (type: string): HyperScriptFunc =>
   (a?: CssClass|VNodeData|Content, b?: VNodeData|Content, c?: Content) => {
     if (isUndefined(a)) {
@@ -58,12 +63,17 @@ export const tag = (type: string): HyperScriptFunc =>
     } else if (isUndefined(b)) {
       return h(type, a as any) // a is Content
     } else if (isString(a) || isArray(a)) {
-      const cssSelector =
-        isString(a) ? a :
-        isArray(a)  ? a.join(".") :
-        ""
-      const selector = type + (cssSelector ? "." : "") + cssSelector
-      return h(selector, b as any, c as any)
+      const $classes = isString(a) ? [a] : isArray(a) ? a : []
+      const classes = {} as {[name: string]: boolean}
+      for (const klass of $classes) classes[klass] = true
+      if (c || !isContent(b)) {
+        const vnd = b as VNodeData
+        b = {...vnd, class: classes}
+      } else {
+        c = b as Content
+        b = {class: classes}
+      }
+      return h(type, b as any, c as any)
     } else {
       return h(type, a as any, b as any)
     }
@@ -88,6 +98,8 @@ export const a = tag("a")
 
 export const br = h("br")
 
+export const iframe = tag("iframe")
+
 const svgTag = (type: string) => {
   const t = tag(type)
   return (attrs: any, children?: string | VNode[]) =>
@@ -107,8 +119,8 @@ const replaceWithBr = (str: string, target: string) =>
 export const newlineToBr = (str: string) => replaceWithBr(str, "\n")
 export const newlineStrToBr = (str: string) => replaceWithBr(str, "\\n")
 
-type CSS = Maybe<string | string[] | NestedCSSProperties>
-export const style = (...css: CSS[]) => {
+export type Style = Maybe<string | string[] | NestedCSSProperties>
+export const style = (...css: Style[]) => {
   const classNames: string[] = []
   const cssProperties: NestedCSSProperties[] = []
   for (const it of css) {

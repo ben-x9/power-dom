@@ -7,8 +7,7 @@
   "author": "Ben Lambert",
   "license": "MIT",
   "scripts": {
-    "postinstall": "npm run build",
-    "build": "tsc -d --outDir build src/index.ts",
+    "postinstall": "tsc -d --outDir build src/index.ts",
     "lint": "tslint -p tsconfig.json --type-check src/index.ts test/index.test.ts",
     "test": "mocha-webpack",
     "test:watch": "npm run test -- --watch",

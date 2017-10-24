@@ -32,9 +32,8 @@ const hasLifecycleEvents = (props: Props): Boolean =>
   props.onComponentWillUpdate ||
   props.onComponentDidUpdate
 
-const h = (tagName: string, className?: string, props?: Props, children?: Children): VNode => {
-  props = {...props, className}
-  if (hasLifecycleEvents(props)) {
+const h = (tagName: string, props?: Props, children?: Children): VNode => {
+  if (props && hasLifecycleEvents(props)) {
     const component = createClass({
       displayName: tagName.toUpperCase() + "_" + Math.random(),
       onComponentDidMount: props.onComponentDidMount,
@@ -149,3 +148,6 @@ export const style = (...css: Style[]) => {
   if (cssProperties.length) result.push($style(...cssProperties))
   return result.length > 1 ? result : result[0]
 }
+
+export const patch = (domElemId: string) => (vnode: VNode) =>
+  render(vnode, document.getElementById(domElemId) as HTMLElement)

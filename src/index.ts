@@ -1,20 +1,14 @@
-import h from "snabbdom/h"
-import * as snabbdom from "snabbdom"
+
 import {types, style as $style} from "typestyle"
 export type NestedCSSProperties = types.NestedCSSProperties
-import snabbdomClass from "snabbdom/modules/class"
-import snabbdomProps from "snabbdom/modules/props"
-import snabbdomAttrs from "snabbdom/modules/attributes"
-import snabbdomStyle from "snabbdom/modules/style"
-import snabbdomListeners from "snabbdom/modules/eventlisteners"
-
-import {VNode, VNodeData} from "snabbdom/vnode"
-export type VNode = VNode
-export type VNodeData = VNodeData
+import {VNode, Props, InfernoChildren, createVNode, render} from "inferno"
+import createClass from "inferno-create-class"
+import createElement from "inferno-create-element"
 
 import {
   isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing, exists, Maybe
 } from "power-belt"
+import Component from "inferno-component"
 
 interface Global extends Window {
   // make view a global because cannot `x = x || y` when x is a local
@@ -22,56 +16,75 @@ interface Global extends Window {
 }
 const global = window as Global
 
-const snabbdomPatch = snabbdom.init([
-  snabbdomClass,
-  snabbdomProps,
-  // snabbdomAttrs,
-  snabbdomStyle,
-  snabbdomListeners
-])
-
-export const patch = (domElemId: string) => (vnode: VNode) =>
-  global.view = snabbdomPatch(
-    global.view || document.getElementById(domElemId) as HTMLElement,
-    h("div#" + domElemId, vnode)
-  )
-
 interface Name {
   name: string
 }
 
-export type Content = OneOrMore<string|VNode|Nothing>
-export type CssClass = OneOrMore<string|Nothing>
+// export type Content = OneOrMore<string|VNode|Nothing>
+export type Children = InfernoChildren
+export type ClassName = OneOrMore<string|Nothing>
+
+const hasLifecycleEvents = (props: Props): Boolean =>
+  props.onComponentDidMount ||
+  props.onComponentWillMount ||
+  props.onComponentWillUnmount ||
+  props.onComponentShouldUpdate ||
+  props.onComponentWillUpdate ||
+  props.onComponentDidUpdate
+
+const h = (tagName: string, className?: string, props?: Props, children?: Children): VNode => {
+  props = {...props, className}
+  if (hasLifecycleEvents(props)) {
+    const component = createClass({
+      displayName: tagName.toUpperCase() + "_" + Math.random(),
+      onComponentDidMount: props.onComponentDidMount,
+      onComponentWillMount: props.onComponentWillMount,
+      onComponentWillUnmount: props.onComponentWillUnmount,
+      onComponentShouldUpdate: props.onComponentShouldUpdate,
+      onComponentWillUpdate: props.onComponentWillUpdate,
+      onComponentDidUpdate: props.onComponentDidUpdate,
+      render() {
+        return createElement(tagName, props, children)
+      }
+    })
+    return createElement(new component())
+  }
+  else
+    return createElement(tagName, props, children)
+}
 
 export interface HyperScriptFunc {
   (): VNode
-  (content: Content): VNode
-  (data: VNodeData): VNode
-  (data: VNodeData, content: Content): VNode
-  (cssClass: CssClass, content: Content): VNode
-  (cssClass: CssClass, data: VNodeData): VNode
-  (cssClass: CssClass, data: VNodeData, content: Content): VNode
+  (children: Children): VNode,
+  (props: Props): VNode
+  (props: Props, children: Children): VNode
+  (className: ClassName, children: Children): VNode
+  (className: ClassName, props: Props): VNode
+  (className: ClassName, props: Props, children: Children): VNode
 }
 
-const isContent = (x: Maybe<VNodeData|Content>) =>
-  x && (isString(x) || isArray(x) || (x as VNode).sel)
+const isOneOrMoreChildren = (x: Maybe<Props|Children>) =>
+  x && (isString(x) || isArray(x) || (x as VNode).type)
 
 export const tag = (type: string): HyperScriptFunc =>
-  (a?: CssClass|VNodeData|Content, b?: VNodeData|Content, c?: Content) => {
+  (a?: ClassName|Props|Children, b?: Props|Children, c?: Children) => {
     if (isUndefined(a)) {
       return h(type)
     } else if (isUndefined(b)) {
       return h(type, a as any) // a is Content
     } else if (isString(a) || isArray(a)) {
       const $classes = isString(a) ? [a] : isArray(a) ? a : []
-      const classes = {} as {[name: string]: boolean}
-      for (const klass of $classes) classes[klass] = true
-      if (c || !isContent(b)) {
-        const vnd = b as VNodeData
-        b = {...vnd, class: classes}
+      const classes: string[] = []
+      for (const klass of $classes) {
+        if (isString(klass))
+          classes.push(klass)
+      }
+      if (c || !isOneOrMoreChildren(b)) {
+        const vnd = b as Props
+        b = {...vnd, className: classes.join(" ")}
       } else {
-        c = b as Content
-        b = {class: classes}
+        c = b as Children
+        b = {className: classes.join(" ")}
       }
       return h(type, b as any, c as any)
     } else {

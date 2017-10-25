@@ -2,14 +2,12 @@
 import {types, style as $style} from "typestyle"
 export type NestedCSSProperties = types.NestedCSSProperties
 import {VNode, Props, InfernoChildren, createVNode, render} from "inferno"
-import createClass from "inferno-create-class"
 import createElement from "inferno-create-element"
 import {filter} from "lodash"
 
 import {
   isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing, exists, Maybe
 } from "power-belt"
-import Component from "inferno-component"
 
 interface Global extends Window {
   // make view a global because cannot `x = x || y` when x is a local
@@ -28,9 +26,12 @@ export type Children = InfernoChildren
 export type ClassName = string|string[]
 export type VNode = VNode
 
+
+
 export interface Hooks {
-  insert?: (vnode: VNode) => void
-  update?: (vnode: VNode) => void
+  insert?: (elm: HTMLElement) => void
+  update?: (elm: HTMLElement) => void
+  target?: HTMLElement
 }
 
 export interface EventListeners {
@@ -48,14 +49,6 @@ export interface SnabbdomProps extends Props {
   on?: EventListeners,
   hook?: Hooks
 }
-
-const hasLifecycleEvents = (props: Props): Boolean =>
-  props.onComponentDidMount ||
-  props.onComponentWillMount ||
-  props.onComponentWillUnmount ||
-  props.onComponentShouldUpdate ||
-  props.onComponentWillUpdate ||
-  props.onComponentDidUpdate
 
 const convertListeners = (props: SnabbdomProps): Props => {
   if (props.on) {
@@ -75,39 +68,31 @@ const convertListeners = (props: SnabbdomProps): Props => {
 }
 
 const h = (tagName: string, props?: SnabbdomProps, children?: Children): VNode => {
-  let hook: Hooks|null = null
+  let hooks: Hooks|null = null
   if (children && isArray(children))
     children = filter(children, c => c !== null)
   if (props) {
-    hook = props.hook
+    hooks = props.hook
     props = {...props, ...convertListeners(props), ...props.attrs, ...props.props}
     delete props.on
     delete props.attrs
     delete props.props
     delete props.hook
   }
-  if (props && hasLifecycleEvents(props)) {
-    const component = createClass({
-      displayName: tagName.toUpperCase() + "_" + Math.random(),
-      onComponentDidMount: () => {
-        if (hook && hook.insert)
-          hook.insert(this._vnode)
+  if (hooks) {
+    const component = () => createElement(tagName, props, children)
+    return createElement(component, {
+      onComponentDidMount: (target: HTMLElement) => {
+        hooks.target = target
+        if (hooks && hooks.insert)
+          hooks.insert(target)
       },
-      onComponentWillMount: props.onComponentWillMount,
-      onComponentWillUnmount: props.onComponentWillUnmount,
-      onComponentShouldUpdate: props.onComponentShouldUpdate,
-      onComponentWillUpdate: props.onComponentWillUpdate,
       onComponentDidUpdate: () => {
-        if (hook && hook.update)
-          hook.update(this._vnode)
-      },
-      render() {
-        return createElement(tagName, props, children)
+        if (hooks && hooks.update)
+          hooks.update(hooks.target)
       }
     })
-    return createElement(new component())
-  }
-  else
+  } else
     return createElement(tagName, props, children)
 }
 

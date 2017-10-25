@@ -1,4 +1,4 @@
-import {tag, newlineToBr, br, VNodeData} from "src"
+/*import {tag, newlineToBr, br, VNodeData} from "src"
 import {assert} from "chai"
 
 describe("tag", () => {
@@ -43,4 +43,4 @@ describe("newlineToBr", () => {
       ["hello", br, "world", br, "", br, "have a nice day"]
     )
   })
-})
+})*/

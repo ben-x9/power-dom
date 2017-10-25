@@ -7,19 +7,23 @@
   "author": "Ben Lambert",
   "license": "MIT",
   "scripts": {
-    "install": "npm run build",
-    "build": "a=`find src -type f | grep '\\.ts$'`; tsc -d --outDir build $a",
-    "lint": "a=`find src test types -type f | grep '\\.ts$'`; tslint -p tsconfig.json --type-check $a",
+    "postinstall": "tsc -d",
+    "lint": "tslint -p tsconfig.json --type-check src/index.ts test/index.test.ts",
     "test": "mocha-webpack",
     "test:watch": "npm run test -- --watch",
     "test:browser": "webpack-dev-server --config webpack/config.test.browser.js --hot"
   },
   "dependencies": {
-    "power-belt": "https://github.com/bjoyx/power-belt.git",
-    "snabbdom": "^0.7.0",
-    "typestyle": "^1.3.4"
+    "power-belt": "https://github.com/chaabaj/power-belt.git",
+    "inferno": "^3.10.0",
+    "inferno-create-class": "^3.10.0",
+    "inferno-component": "^3.10.1",
+    "inferno-create-element": "^3.10.0",
+    "typestyle": "^1.3.4",
+    "lodash": "^4.17.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.0",
     "@types/chai": "^3.5.2",
     "@types/mocha": "^2.2.41",
     "chai": "^3.5.0",

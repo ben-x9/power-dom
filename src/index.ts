@@ -7,10 +7,13 @@ import snabbdomProps from "snabbdom/modules/props"
 import snabbdomAttrs from "snabbdom/modules/attributes"
 import snabbdomStyle from "snabbdom/modules/style"
 import snabbdomListeners from "snabbdom/modules/eventlisteners"
+import snabbdomThunk, {ThunkFn} from "snabbdom/thunk"
 
 import {VNode, VNodeData} from "snabbdom/vnode"
 export type VNode = VNode
 export type VNodeData = VNodeData
+
+export const thunk = snabbdomThunk
 
 import {
   isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing, exists, Maybe

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "power-belt": "https://github.com/bjoyx/power-belt.git",
-    "snabbdom": "https://github.com/bjoyx/snabbdom.git",
+    "snabbdom": "^0.7.0",
     "typestyle": "^1.3.4"
   },
   "devDependencies": {

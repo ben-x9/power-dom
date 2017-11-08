@@ -28,7 +28,7 @@ const global = window as Global
 const snabbdomPatch = snabbdom.init([
   snabbdomClass,
   snabbdomProps,
-  // snabbdomAttrs,
+  snabbdomAttrs,
   snabbdomStyle,
   snabbdomListeners
 ])

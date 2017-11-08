@@ -14,6 +14,7 @@ export type VNode = VNode
 export type VNodeData = VNodeData
 
 export const thunk = snabbdomThunk
+export const hh = h
 
 import {
   isString, isArray, isDefined, isUndefined, log, OneOrMore, Nothing, exists, Maybe
@@ -112,6 +113,8 @@ const svgTag = (type: string) => {
 export const svg = svgTag("svg")
 export const polygon = svgTag("polygon")
 export const text = svgTag("text")
+export const circle = svgTag("circle")
+export const animateTransform = svgTag("animateTransform")
 
 const replaceWithBr = (str: string, target: string) =>
   str.split(target).reduce(

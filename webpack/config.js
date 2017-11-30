@@ -1,17 +1,21 @@
 const path = require('path');
 const webpack = require('webpack');
 
+function absPath(filePath) {
+  return path.join(__dirname, '../', filePath)
+}
+
 module.exports = {
   entry: {
-    index: ['./src/index.ts'],
-  },
-  output: {
-    publicPath: '/',
-    filename: 'bundle.js',
+    index: ['src/index.ts'],
   },
   resolve: {
     extensions: ['.ts', '.js'],
-    modules: [path.resolve('./src'), path.resolve('.'), 'node_modules']
+    modules: [
+      absPath('src'),
+      absPath('.'),
+      "node_modules"
+    ]
   },
   module: {
     loaders: [{
